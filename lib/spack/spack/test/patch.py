@@ -51,6 +51,8 @@ def mock_patch_stage(tmpdir_factory, monkeypatch):
 data_path = os.path.join(spack.paths.test_path, 'data', 'patch')
 
 
+@pytest.mark.skipif(sys.platform == 'win32',
+                    reason="Line ending conflict on Windows")
 @pytest.mark.parametrize('filename, sha256, archive_sha256', [
     # compressed patch -- needs sha256 and archive_256
     (os.path.join(data_path, 'foo.tgz'),
@@ -63,7 +65,7 @@ data_path = os.path.join(spack.paths.test_path, 'data', 'patch')
 ])
 def test_url_patch(mock_patch_stage, filename, sha256, archive_sha256):
     # Make a patch object
-    url = 'file:///' + filename
+    url = 'file://' + filename
     pkg = spack.repo.get('patch')
     patch = spack.patch.UrlPatch(
         pkg, url, sha256=sha256, archive_sha256=archive_sha256)
@@ -75,13 +77,13 @@ def test_url_patch(mock_patch_stage, filename, sha256, archive_sha256):
         mkdirp(stage.source_path)
         with working_dir(stage.source_path):
             # write a file to be patched
-            with open('foo.txt', 'w', newline='\n') as f:
+            with open('foo.txt', 'w') as f:
                 f.write("""\
 first line
 second line
 """)
             # write the expected result of patching.
-            with open('foo-expected.txt', 'w', newline='\n') as f:
+            with open('foo-expected.txt', 'w') as f:
                 f.write("""\
 zeroth line
 first line

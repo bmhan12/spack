@@ -459,7 +459,7 @@ def test_from_environment_diff(before, after, search_list):
 
 
 @pytest.mark.skipif(sys.platform == 'win32',
-                    reason="Not supported on Windows (yet)")
+                    reason="LMod not supported on Windows")
 @pytest.mark.regression('15775')
 def test_blacklist_lmod_variables():
     # Construct the list of environment modifications
