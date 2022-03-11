@@ -628,7 +628,7 @@ def test_read_lock_read_only_dir_writable_lockfile(lock_dir, lock_path):
             pass
 
 
-@pytest.mark.skipif(False if is_windows else os.getuid() == 0, reason='user is root')
+@pytest.mark.skipif(False if is_windows else getuid() == 0, reason='user is root')
 def test_read_lock_no_lockfile(lock_dir, lock_path):
     """read-only directory, no lockfile (so can't create)."""
     with read_only(lock_dir):

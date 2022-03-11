@@ -7,6 +7,7 @@
 import os
 import os.path
 import posixpath
+import re
 import sys
 
 import pytest
@@ -16,6 +17,9 @@ import spack.util.url as url_util
 from spack.util.path import convert_to_posix_path
 
 is_windows = sys.platform == 'win32'
+if is_windows:
+    drive_m = re.search(r'[A-Za-z]:', spack.paths.test_path)
+    drive = drive_m.group() if drive_m else None
 
 
 def test_url_parse():
@@ -41,15 +45,13 @@ def test_url_parse():
         os.path.abspath(
             posixpath.join('path', 'to', 'resource')))
     if is_windows:
-        expected = expected.lstrip('C:')
+        expected = expected.lstrip(drive)
     assert(parsed.path == expected)
 
     if is_windows:
-        parsed = url_util.parse('file://C:\\path\\to\\resource')
+        parsed = url_util.parse('file://%s\\path\\to\\resource' % drive)
         assert(parsed.scheme == 'file')
-        expected = '/' + convert_to_posix_path(
-            posixpath.join('path', 'to', 'resource')
-        )
+        expected = '/' + posixpath.join('path', 'to', 'resource')
         assert parsed.path == expected
 
     parsed = url_util.parse('https://path/to/resource')
