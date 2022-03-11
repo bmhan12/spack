@@ -10,7 +10,6 @@ throughout Spack and should bring in a minimal number of external
 dependencies.
 """
 import os
-import sys
 
 import llnl.util.filesystem
 
